@@ -1,0 +1,84 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    max-width: 600px;
+    margin: 50px auto;
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+h1 {
+    text-align: center;
+}
+
+textarea {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+}
+
+button {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+h2 {
+    text-align: center;
+    margin-top: 20px;
+}
+
+p {
+    font-size: 18px;
+    word-wrap: break-word;
+}
+
+.entity {
+    display: inline-block;
+    position: relative;
+    margin: 0 2px;
+    padding: 2px 5px;
+    border-radius: 4px;
+    background-color: #ff0;
+}
+
+.entity .label {
+    position: absolute;
+    top: -1.5em;
+    right: 0;
+    background: rgba(0, 0, 0, 0.75);
+    color: #fff;
+    padding: 2px 5px;
+    border-radius: 3px;
+    font-size: 0.75em;
+    white-space: nowrap;
+}
+
+.entity.PERSON { background-color: #aaf; }
+.entity.ORG { background-color: #faa; }
+.entity.DATE { background-color: #afa; }
+.entity.LOCATION { background-color: #aaf; }
+.entity.IP { background-color: #ffa; }
+.entity.URL { background-color: #afa; }
+.entity.EMAIL { background-color: #faa; }
