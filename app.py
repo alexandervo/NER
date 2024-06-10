@@ -18,13 +18,12 @@ def get_key_by_value(d, value):
 
 def predict_entities(sentence):
     label_map = {
-        'EVENT': 0, 'IP': 1, 'O': 2, 'PERSON': 3, 'LOCATION': 4,
-        'URL': 5, 'ORGANIZATION': 6, 'SKILL': 7, 'MISCELLANEOUS': 8,
-        'EMAIL': 9, 'DATETIME': 10, 'PRODUCT': 11, 'PHONENUMBER': 12,
-        'QUANTITY': 13, 'ADDRESS': 14, 'PERSONTYPE': 15
+        0: 'EVENT', 1: 'IP', 2: 'O', 3: 'PERSON', 4: 'LOCATION',
+        5: 'URL', 6: 'ORGANIZATION', 7: 'SKILL', 8: 'MISCELLANEOUS',
+        9: 'EMAIL', 10: 'DATETIME', 11: 'PRODUCT', 12: 'PHONENUMBER',
+        13: 'QUANTITY', 14: 'ADDRESS', 15: 'PERSONTYPE'
     }
 
-    # label_map = {'O': 0, 'IP': 1, 'EVENT': 2, 'PERSON': 3, 'LOCATION': 4, 'URL': 5, 'ORGANIZATION': 6, 'SKILL': 7, 'MISCELLANEOUS': 8, 'EMAIL': 9, 'DATETIME': 10, 'PRODUCT': 11, 'PHONENUMBER': 12, 'QUANTITY': 13, 'ADDRESS': 14, 'PERSONTYPE': 15}
     with torch.no_grad():  # Disable gradient calculation for prediction
         # Preprocess the sentence
         encoded_sentence = tokenizer(sentence, return_tensors="pt")
@@ -39,51 +38,40 @@ def predict_entities(sentence):
         tokens = tokenizer.convert_ids_to_tokens(input_ids.squeeze(0))
         predicted_entities = []
 
+        current_entity = None
+        current_tokens = []
+
         for token_index, label_tensor in enumerate(predicted_labels[0]):
             label = label_tensor.item()
-            entity_type = get_key_by_value(label_map, label)
+            entity_type = label_map[label]
             token = tokens[token_index]
 
             if token not in ['[CLS]', '[SEP]']:
-                predicted_entities.append({"token": token, "entity_type": entity_type})
+                if current_entity == entity_type:
+                    current_tokens.append(token.replace('##', ''))
+                else:
+                    if current_entity:
+                        predicted_entities.append({
+                            "entity": current_entity,
+                            "tokens": " ".join(current_tokens)
+                        })
+                    current_entity = entity_type
+                    current_tokens = [token.replace('##', '')]
 
-        s = ""
-        current_entity_type = None
+        if current_entity:
+            predicted_entities.append({
+                "entity": current_entity,
+                "tokens": " ".join(current_tokens)
+            })
 
-        for entity in predicted_entities:
-            token = entity.get("token")
-            entity_type = entity.get("entity_type")
-
-            if current_entity_type is None or entity_type != current_entity_type:
-                if current_entity_type and current_entity_type != 'O':
-                    s += f" ({current_entity_type})"
-                if token:
-                    if token not in [',', '.', '!', '?', ':', ';']:
-                        s += " " + token
-                    else:
-                        s += token
-                current_entity_type = entity_type
-            else:
-                if token:
-                    if token not in [',', '.', '!', '?', ':', ';']:
-                        s += " " + token
-                    else:
-                        s += token
-
-        if current_entity_type and current_entity_type != 'O':
-            s += f" ({current_entity_type})"
-
-        # Remove subword markers
-        text = re.sub(r" ##", "", s)
-        return text.strip()
-
+        return predicted_entities
 @app.route('/', methods=['GET', 'POST'])
 def index():
     if request.method == 'POST':
         sentence = request.form['sentence']
-        result = predict_entities(sentence)
-        return render_template('index.html', result=result, sentence=sentence)
-    return render_template('index.html', result=None)
+        entities = predict_entities(sentence)
+        return render_template('index.html', entities=entities, sentence=sentence)
+    return render_template('index.html', entities=[])
 
 if __name__ == '__main__':
     app.run(debug=True)

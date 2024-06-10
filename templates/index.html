@@ -5,20 +5,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NER Web App</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <script src="{{ url_for('static', filename='script.js') }}" defer></script>
 </head>
 <body>
-    <div class="container">
-        <h1>Named Entity Recognition</h1>
-        <form method="POST">
-            <textarea name="sentence" rows="4" cols="50" placeholder="Enter a sentence...">{{ sentence }}</textarea><br>
-            <button type="submit">Predict</button>
-        </form>
-        {% if result %}
-            <h2>Result:</h2>
-            <p id="result">
-                {{ result }}
-            </p>
-        {% endif %}
+    <h1>Named Entity Recognition</h1>
+    <form method="post">
+        <textarea name="sentence" rows="4" cols="50">{{ sentence }}</textarea>
+        <br><br>
+        <button type="submit">Predict</button>
+    </form>
+    <h2>Result:</h2>
+    <div>
+        {% for entity in entities %}
+            {% if entity.entity != 'O' %}
+                <span class="entity {{ entity.entity }}">
+                    {{ entity.tokens }} ({{ entity.entity }})
+                </span>
+            {% else %}
+                <span class="entity">
+                    {{ entity.tokens }}
+                </span>
+            {% endif %}
+        {% endfor %}
     </div>
 </body>
 </html>

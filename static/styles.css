@@ -60,7 +60,7 @@ p {
     margin: 0 2px;
     padding: 2px 5px;
     border-radius: 4px;
-    background-color: #ff0;
+    background-color: transparent;
 }
 
 .entity .label {
@@ -75,10 +75,19 @@ p {
     white-space: nowrap;
 }
 
-.entity.PERSON { background-color: #aaf; }
-.entity.ORG { background-color: #faa; }
-.entity.DATE { background-color: #afa; }
-.entity.LOCATION { background-color: #aaf; }
-.entity.IP { background-color: #ffa; }
-.entity.URL { background-color: #afa; }
-.entity.EMAIL { background-color: #faa; }
+
+.entity.EVENT { background-color: #FFD700; }  /* Gold */
+.entity.IP { background-color: #FF6347; }  /* Tomato */
+.entity.PERSON { background-color: #7FFFD4; }  /* Aquamarine */
+.entity.LOCATION { background-color: #8A2BE2; }  /* BlueViolet */
+.entity.URL { background-color: #5F9EA0; }  /* CadetBlue */
+.entity.ORGANIZATION { background-color: #FF69B4; }  /* HotPink */
+.entity.SKILL { background-color: #CD5C5C; }  /* IndianRed */
+.entity.MISCELLANEOUS { background-color: #4B0082; }  /* Indigo */
+.entity.EMAIL { background-color: #7CFC00; }  /* LawnGreen */
+.entity.DATETIME { background-color: #20B2AA; }  /* LightSeaGreen */
+.entity.PRODUCT { background-color: #87CEFA; }  /* LightSkyBlue */
+.entity.PHONENUMBER { background-color: #778899; }  /* LightSlateGray */
+.entity.QUANTITY { background-color: #32CD32; }  /* LimeGreen */
+.entity.ADDRESS { background-color: #FF4500; }  /* OrangeRed */
+.entity.PERSONTYPE { background-color: #DA70D6; }  /* Orchid */
