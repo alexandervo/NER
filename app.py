@@ -24,6 +24,7 @@ def predict_entities(sentence):
         'QUANTITY': 13, 'ADDRESS': 14, 'PERSONTYPE': 15
     }
 
+    # label_map = {'O': 0, 'IP': 1, 'EVENT': 2, 'PERSON': 3, 'LOCATION': 4, 'URL': 5, 'ORGANIZATION': 6, 'SKILL': 7, 'MISCELLANEOUS': 8, 'EMAIL': 9, 'DATETIME': 10, 'PRODUCT': 11, 'PHONENUMBER': 12, 'QUANTITY': 13, 'ADDRESS': 14, 'PERSONTYPE': 15}
     with torch.no_grad():  # Disable gradient calculation for prediction
         # Preprocess the sentence
         encoded_sentence = tokenizer(sentence, return_tensors="pt")
