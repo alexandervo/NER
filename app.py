@@ -47,24 +47,31 @@ def predict_entities(sentence):
             token = tokens[token_index]
 
             if token not in ['[CLS]', '[SEP]']:
-                if current_entity == entity_type:
-                    current_tokens.append(token.replace('##', ''))
+                if token.startswith('##'):
+                    current_tokens[-1] += token.replace('##', '')
                 else:
-                    if current_entity:
-                        predicted_entities.append({
-                            "entity": current_entity,
-                            "tokens": " ".join(current_tokens)
-                        })
-                    current_entity = entity_type
-                    current_tokens = [token.replace('##', '')]
+                    if current_entity == entity_type:
+                        if entity_type in ['URL', 'EMAIL', 'IP']:
+                            current_tokens[-1] += token
+                        else:
+                            current_tokens.append(token)
+                    else:
+                        if current_entity:
+                            predicted_entities.append({
+                                "entity": current_entity,
+                                "tokens": " ".join(current_tokens) if current_entity not in ['URL', 'EMAIL', 'IP'] else "".join(current_tokens)
+                            })
+                        current_entity = entity_type
+                        current_tokens = [token]
 
         if current_entity:
             predicted_entities.append({
                 "entity": current_entity,
-                "tokens": " ".join(current_tokens)
+                "tokens": " ".join(current_tokens) if current_entity not in ['URL', 'EMAIL', 'IP'] else "".join(current_tokens)
             })
 
         return predicted_entities
+
 @app.route('/', methods=['GET', 'POST'])
 def index():
     if request.method == 'POST':

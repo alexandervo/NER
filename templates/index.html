@@ -1,32 +1,89 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>NER Web App</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='styles.css') }}"
+    />
     <script src="{{ url_for('static', filename='script.js') }}" defer></script>
-</head>
-<body>
-    <h1>Named Entity Recognition</h1>
-    <form method="post">
-        <textarea name="sentence" rows="4" cols="50">{{ sentence }}</textarea>
-        <br><br>
-        <button type="submit">Predict</button>
-    </form>
-    <h2>Result:</h2>
-    <div>
-        {% for entity in entities %}
+  </head>
+  <body>
+    <div class="box">
+      <div class="box-container">
+        <h1>Nhận Diện Thực Thể Có Tên</h1>
+        <form method="post">
+          <div class="textarea-container">
+            <textarea id="autoResizeTextarea" name="sentence" rows="4" cols="50">{{ sentence }}</textarea>
+          </div>
+          <div class="button-container">
+            <button type="submit">Dự Đoán</button>
+          </div>
+        </form>
+        <h2>Kết Quả</h2>
+        <button style="margin-left: 61rem; margin-bottom: 2px;  width: 12rem;" id="toggleButton">Chỉ hiện tên thực thể</button>
+        <div class="result-box">
+          <div class="container">
+            {% for entity in entities %}
             {% if entity.entity != 'O' %}
-                <span class="entity {{ entity.entity }}">
-                    {{ entity.tokens }} ({{ entity.entity }})
-                </span>
+            <div class="entity-container {{ entity.entity }}">
+              <span class="entity">
+                {{ entity.tokens }}
+                <span class="label">{{ entity.entity }}</span>
+              </span>
+            </div>
             {% else %}
-                <span class="entity">
-                    {{ entity.tokens }}
-                </span>
+            <span class="text">{{ entity.tokens }}</span>
             {% endif %}
-        {% endfor %}
+            {% endfor %}
+          </div>
+        </div>
+      </div>
     </div>
-</body>
+  </body>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const textarea = document.getElementById("autoResizeTextarea");
+
+
+      textarea.addEventListener("input", function () {
+        this.style.height = "auto";
+        this.style.height = this.scrollHeight + "px";
+      });
+
+
+      const toggleButton = document.getElementById("toggleButton");
+      const textElements = document.querySelectorAll(".text");
+
+
+      toggleButton.addEventListener("click", function () {
+        let allHidden = true;
+
+
+        textElements.forEach(function (text) {
+          if (text.style.display === "none") {
+            text.style.display = "inline";
+            allHidden = false;
+          } else {
+            text.style.display = "none";
+          }
+        });
+
+
+        if (allHidden) {
+          toggleButton.textContent = "Hiện toàn bộ";
+        } else {
+          toggleButton.textContent = "Chỉ hiện tên thực thể";
+        }
+      });
+    });
+  </script>
 </html>

@@ -42,10 +42,22 @@ def flat_accuracy(preds, labels):
     return np.sum(pred_flat == labels_flat) / len(labels_flat)
 
 
-def compute_metrics(preds, labels):
-    pred_flat = np.concatenate([np.argmax(p, axis=1) for p in preds])
-    labels_flat = np.concatenate(labels)
-    return precision_recall_fscore_support(labels_flat, pred_flat, average='weighted')
+def compute_metrics(preds, labels, label_map):
+    preds_flat = [p for pred in preds for p in pred]
+    labels_flat = [l for label in labels for l in label]
+
+    preds_flat = [p for p, l in zip(preds_flat, labels_flat) if l != -100]
+    labels_flat = [l for l in labels_flat if l != -100]
+
+    accuracy = accuracy_score(labels_flat, preds_flat)
+    precision, recall, f1, _ = precision_recall_fscore_support(labels_flat, preds_flat, average='macro', labels=list(label_map.values()))
+
+    return {
+        'Accuracy': accuracy,
+        'Precision': precision,
+        'Recall': recall,
+        'F1 Score': f1
+    }
 
 class EarlyStopping:
     def __init__(self, patience=3, verbose=False, delta=0):
