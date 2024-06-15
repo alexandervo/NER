@@ -15,7 +15,7 @@ def load_data(file_path):
     return df
 
 # Khởi tạo tokenizer
-tokenizer = BertTokenizerFast.from_pretrained('ner_model')
+tokenizer = BertTokenizerFast.from_pretrained('bert-base-multilingual-cased')
 
 # Tạo label map
 label_map = {
@@ -91,11 +91,11 @@ def create_data(config):
     if not os.path.exists(os.path.join(config["save_path"], "train_data.csv")):
         print("Đang khởi tạo dữ liệu...")
         train_data = load_data(os.path.join(config["raw_path"], "train.txt"))
-        dev_data = load_data(os.path.join(config["raw_path"], "dev.txt"))
-        test_data = load_data(os.path.join(config["raw_path"], "test.txt"))
+        #dev_data = load_data(os.path.join(config["raw_path"], "dev.txt"))
+        #test_data = load_data(os.path.join(config["raw_path"], "test.txt"))
         train_data.to_csv(os.path.join(config["save_path"], "train_data.csv"), index=False)
-        dev_data.to_csv(os.path.join(config["save_path"], "dev_data.csv"), index=False)
-        test_data.to_csv(os.path.join(config["save_path"], "test_data.csv"), index=False)
+        #dev_data.to_csv(os.path.join(config["save_path"], "dev_data.csv"), index=False)
+        #test_data.to_csv(os.path.join(config["save_path"], "test_data.csv"), index=False)
         print("Khởi tạo dữ liệu hoàn tất!")
 
     print("Đang tải dữ liệu...")

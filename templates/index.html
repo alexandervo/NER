@@ -7,7 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900&display=swap"
       rel="stylesheet"
     />
     <link
@@ -15,6 +15,76 @@
       href="{{ url_for('static', filename='styles.css') }}"
     />
     <script src="{{ url_for('static', filename='script.js') }}" defer></script>
+    <style>
+      .divider {
+        width: 1px;
+        background-color: #ddd;
+        margin: 0 20px;
+        height: auto;
+      }
+      .toggle-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+        padding: 10px;
+      }
+      .toggle-item {
+        display: flex;
+        align-items: center;
+      }
+      .toggle-item span {
+        margin-right: 10px;
+        font-weight: bold;
+      }
+      .entity-container {
+        position: relative;
+      }
+      .entity-container .tooltip {
+        visibility: hidden;
+        width: 120px;
+        background-color: #555;
+        color: #fff;
+        text-align: center;
+        border-radius: 5px;
+        padding: 5px 0;
+        position: absolute;
+        z-index: 1;
+        bottom: 125%;
+        left: 50%;
+        margin-left: -60px;
+        opacity: 0;
+        transition: opacity 0.3s;
+      }
+      .entity-container .tooltip::after {
+        content: "";
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        margin-left: -5px;
+        border-width: 5px;
+        border-style: solid;
+        border-color: #555 transparent transparent transparent;
+      }
+      .entity-container:hover .tooltip {
+        visibility: visible;
+        opacity: 1;
+      }
+      .hover-highlight {
+        background-color: rgba(40, 40, 40, 0.9);
+        border-radius: 10px;
+        color: #fff;
+        margin: 3px 10px;
+      }
+
+
+      .click-highlight {
+        background-color: rgba(40, 40, 40, 1);
+        border-radius: 10px;
+        color: #fff;
+        margin: 3px 10px;
+      }
+    </style>
   </head>
   <body>
     <div class="box">
@@ -22,68 +92,412 @@
         <h1>Nhận Diện Thực Thể Có Tên</h1>
         <form method="post">
           <div class="textarea-container">
-            <textarea id="autoResizeTextarea" name="sentence" rows="4" cols="50">{{ sentence }}</textarea>
+            <textarea
+              id="autoResizeTextarea"
+              name="sentence"
+              rows="4"
+              cols="50"
+            >
+{{ sentence }}</textarea
+            >
           </div>
           <div class="button-container">
-            <button type="submit">Dự Đoán</button>
+            <button type="submit">Tìm Thực Thể</button>
           </div>
         </form>
         <h2>Kết Quả</h2>
-        <button style="margin-left: 61rem; margin-bottom: 2px;  width: 12rem;" id="toggleButton">Chỉ hiện tên thực thể</button>
         <div class="result-box">
-          <div class="container">
-            {% for entity in entities %}
-            {% if entity.entity != 'O' %}
-            <div class="entity-container {{ entity.entity }}">
-              <span class="entity">
-                {{ entity.tokens }}
-                <span class="label">{{ entity.entity }}</span>
-              </span>
+          <div class="toggle-container">
+            <div class="toggle-item">
+              <span id="toggleLabelTypes"
+                >Hiện Danh Sách Các Loại Nhãn Có Thể Nhận Diện</span
+              >
+              <label class="switch">
+                <input type="checkbox" id="toggleSwitchTypes" />
+                <span class="slider round"></span>
+              </label>
             </div>
-            {% else %}
-            <span class="text">{{ entity.tokens }}</span>
-            {% endif %}
-            {% endfor %}
+            <div class="toggle-item">
+              <span id="toggleLabelEntities">Chỉ Hiện Tên Thực Thể</span>
+              <label class="switch">
+                <input type="checkbox" id="toggleSwitchEntities" />
+                <span class="slider round"></span>
+              </label>
+            </div>
+          </div>
+          <div
+            class="container"
+            style="display: flex; justify-content: space-between; padding: 20px"
+          >
+            <div
+              class="entity-list"
+              id="entityList"
+              style="flex: 1; margin-right: auto; display: none"
+            >
+              <h3 style="font-size: 22px">Các Loại Nhãn:</h3>
+              <ul>
+                <li
+                  style="
+                    text-align: center;
+                    width: 150px;
+                    font-weight: 600;
+                    font-size: 18px;
+                  "
+                  class="entity-container entity-label EVENT"
+                  data-entity="EVENT"
+                >
+                  EVENT
+                  <span class="tooltip">Sự kiện</span>
+                </li>
+                <li
+                  style="
+                    text-align: center;
+                    width: 150px;
+                    font-weight: 600;
+                    font-size: 18px;
+                  "
+                  class="entity-container entity-label IP"
+                  data-entity="IP"
+                >
+                  IP
+                  <span class="tooltip">Địa chỉ IP</span>
+                </li>
+                <li
+                  style="
+                    text-align: center;
+                    width: 150px;
+                    font-weight: 600;
+                    font-size: 18px;
+                  "
+                  class="entity-container entity-label PERSON"
+                  data-entity="PERSON"
+                >
+                  PERSON
+                  <span class="tooltip">Người</span>
+                </li>
+                <li
+                  style="
+                    text-align: center;
+                    width: 150px;
+                    font-weight: 600;
+                    font-size: 18px;
+                  "
+                  class="entity-container entity-label LOCATION"
+                  data-entity="LOCATION"
+                >
+                  LOCATION
+                  <span class="tooltip">Địa điểm</span>
+                </li>
+                <li
+                  style="
+                    text-align: center;
+                    width: 150px;
+                    font-weight: 600;
+                    font-size: 18px;
+                  "
+                  class="entity-container entity-label URL"
+                  data-entity="URL"
+                >
+                  URL
+                  <span class="tooltip">Liên kết</span>
+                </li>
+                <li
+                  style="
+                    text-align: center;
+                    width: 150px;
+                    font-weight: 600;
+                    font-size: 18px;
+                  "
+                  class="entity-container entity-label ORGANIZATION"
+                  data-entity="ORGANIZATION"
+                >
+                  ORGANIZATION
+                  <span class="tooltip">Tổ chức</span>
+                </li>
+                <li
+                  style="
+                    text-align: center;
+                    width: 150px;
+                    font-weight: 600;
+                    font-size: 18px;
+                  "
+                  class="entity-container entity-label SKILL"
+                  data-entity="SKILL"
+                >
+                  SKILL
+                  <span class="tooltip">Kỹ năng</span>
+                </li>
+                <li
+                  style="
+                    text-align: center;
+                    width: 150px;
+                    font-weight: 600;
+                    font-size: 18px;
+                  "
+                  class="entity-container entity-label MISCELLANEOUS"
+                  data-entity="MISCELLANEOUS"
+                >
+                  MISCELLANEOUS
+                  <span class="tooltip">Khác</span>
+                </li>
+                <li
+                  style="
+                    text-align: center;
+                    width: 150px;
+                    font-weight: 600;
+                    font-size: 18px;
+                  "
+                  class="entity-container entity-label EMAIL"
+                  data-entity="EMAIL"
+                >
+                  EMAIL
+                  <span class="tooltip">Email</span>
+                </li>
+                <li
+                  style="
+                    text-align: center;
+                    width: 150px;
+                    font-weight: 600;
+                    font-size: 18px;
+                  "
+                  class="entity-container entity-label DATETIME"
+                  data-entity="DATETIME"
+                >
+                  DATETIME
+                  <span class="tooltip">Ngày giờ</span>
+                </li>
+                <li
+                  style="
+                    text-align: center;
+                    width: 150px;
+                    font-weight: 600;
+                    font-size: 18px;
+                  "
+                  class="entity-container entity-label PRODUCT"
+                  data-entity="PRODUCT"
+                >
+                  PRODUCT
+                  <span class="tooltip">Sản phẩm</span>
+                </li>
+                <li
+                  style="
+                    text-align: center;
+                    width: 150px;
+                    font-weight: 600;
+                    font-size: 18px;
+                  "
+                  class="entity-container entity-label PHONENUMBER"
+                  data-entity="PHONENUMBER"
+                >
+                  PHONENUMBER
+                  <span class="tooltip">Số điện thoại</span>
+                </li>
+                <li
+                  style="
+                    text-align: center;
+                    width: 150px;
+                    font-weight: 600;
+                    font-size: 18px;
+                  "
+                  class="entity-container entity-label QUANTITY"
+                  data-entity="QUANTITY"
+                >
+                  QUANTITY
+                  <span class="tooltip">Số lượng</span>
+                </li>
+                <li
+                  style="
+                    text-align: center;
+                    width: 150px;
+                    font-weight: 600;
+                    font-size: 18px;
+                  "
+                  class="entity-container entity-label ADDRESS"
+                  data-entity="ADDRESS"
+                >
+                  ADDRESS
+                  <span class="tooltip">Địa chỉ</span>
+                </li>
+                <li
+                  style="
+                    text-align: center;
+                    width: 150px;
+                    font-weight: 600;
+                    font-size: 18px;
+                  "
+                  class="entity-container entity-label PERSONTYPE"
+                  data-entity="PERSONTYPE"
+                >
+                  PERSONTYPE
+                  <span class="tooltip">Loại người</span>
+                </li>
+              </ul>
+            </div>
+            <div class="divider"></div>
+            <div
+              class="recognized-entities"
+              id="recognizedEntities"
+              style="flex: 6; margin-left: 20px"
+            >
+              <div class="entity-display" style="margin: 1.5rem 0">
+                {% for entity in entities %} {% if entity.entity != 'O' %}
+                <div class="entity-container {{ entity.entity }}">
+                  <span
+                    class="entity entity-token"
+                    data-entity="{{ entity.entity }}"
+                  >
+                    {{ entity.tokens }}
+                    <span class="label"
+                      >{{ entity.entity }}
+                      <span class="tooltip">
+                        {% if entity.entity == 'EVENT' %} Sự kiện {% elif
+                        entity.entity == 'IP' %} Địa chỉ IP {% elif
+                        entity.entity == 'PERSON' %} Người {% elif entity.entity
+                        == 'LOCATION' %} Địa điểm {% elif entity.entity == 'URL'
+                        %} Liên kết {% elif entity.entity == 'ORGANIZATION' %}
+                        Tổ chức {% elif entity.entity == 'SKILL' %} Kỹ năng {%
+                        elif entity.entity == 'MISCELLANEOUS' %} Khác {% elif
+                        entity.entity == 'EMAIL' %} Email {% elif entity.entity
+                        == 'DATETIME' %} Ngày giờ {% elif entity.entity ==
+                        'PRODUCT' %} Sản phẩm {% elif entity.entity ==
+                        'PHONENUMBER' %} Số điện thoại {% elif entity.entity ==
+                        'QUANTITY' %} Số lượng {% elif entity.entity ==
+                        'ADDRESS' %} Địa chỉ {% elif entity.entity ==
+                        'PERSONTYPE' %} Loại người {% endif %}
+                      </span>
+                    </span>
+                  </span>
+                </div>
+                {% else %}
+                <span class="text">{{ entity.tokens }}</span>
+                {% endif %} {% endfor %}
+              </div>
+              <div
+                style="margin-left: 2rem; margin-bottom: 2rem; margin-top: 2rem"
+              >
+                <h3
+                  style="
+                    font-size: 22px;
+                    border-top: 1px solid #ddd;
+                    padding-top: 2rem;
+                  "
+                >
+                  Các Thực Thể Được Nhận Diện:
+                </h3>
+                <ul>
+                  {% for entity in entities %} {% if entity.entity != 'O' %}
+                  <li style="font-size: 20px">
+                    {{ entity.tokens }} - <strong>{{ entity.entity }}</strong>
+                  </li>
+                  {% endif %} {% endfor %}
+                </ul>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </body>
-  <script>
-    document.addEventListener("DOMContentLoaded", function () {
-      const textarea = document.getElementById("autoResizeTextarea");
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const textarea = document.getElementById("autoResizeTextarea");
 
 
-      textarea.addEventListener("input", function () {
-        this.style.height = "auto";
-        this.style.height = this.scrollHeight + "px";
-      });
-
-
-      const toggleButton = document.getElementById("toggleButton");
-      const textElements = document.querySelectorAll(".text");
-
-
-      toggleButton.addEventListener("click", function () {
-        let allHidden = true;
-
-
-        textElements.forEach(function (text) {
-          if (text.style.display === "none") {
-            text.style.display = "inline";
-            allHidden = false;
-          } else {
-            text.style.display = "none";
-          }
+        textarea.addEventListener("input", function () {
+          this.style.height = "auto";
+          this.style.height = this.scrollHeight + "px";
         });
 
 
-        if (allHidden) {
-          toggleButton.textContent = "Hiện toàn bộ";
-        } else {
-          toggleButton.textContent = "Chỉ hiện tên thực thể";
-        }
+        const toggleSwitchEntities = document.getElementById(
+          "toggleSwitchEntities"
+        );
+        const textElements = document.querySelectorAll(".text");
+        const toggleLabelEntities = document.getElementById(
+          "toggleLabelEntities"
+        );
+
+
+        toggleSwitchEntities.addEventListener("change", function () {
+          textElements.forEach(function (text) {
+            text.style.display = toggleSwitchEntities.checked
+              ? "none"
+              : "inline";
+          });
+
+
+          toggleLabelEntities.textContent = toggleSwitchEntities.checked
+            ? "Hiện Toàn Bộ"
+            : "Chỉ Hiện Tên Thực Thể";
+        });
+
+
+        const toggleSwitchTypes = document.getElementById("toggleSwitchTypes");
+        const entityList = document.getElementById("entityList");
+        const toggleLabelTypes = document.getElementById("toggleLabelTypes");
+
+
+        toggleSwitchTypes.addEventListener("change", function () {
+          entityList.style.display = toggleSwitchTypes.checked
+            ? "block"
+            : "none";
+
+
+          toggleLabelTypes.textContent = toggleSwitchTypes.checked
+            ? "Ẩn Danh Sách Các Loại Nhãn Có Thể Nhận Diện"
+            : "Hiện Danh Sách Các Loại Nhãn Có Thể Nhận Diện";
+        });
+
+
+        const entityLabels = document.querySelectorAll(".entity-label");
+        const entityTokens = document.querySelectorAll(".entity-token");
+
+
+        entityLabels.forEach((label) => {
+          label.addEventListener("mouseenter", function () {
+            const entity = label.getAttribute("data-entity");
+            entityTokens.forEach((token) => {
+              if (token.getAttribute("data-entity") === entity) {
+                token.classList.add("hover-highlight");
+              }
+            });
+          });
+
+
+          label.addEventListener("mouseleave", function () {
+            entityTokens.forEach((token) => {
+              token.classList.remove("hover-highlight");
+            });
+          });
+
+
+          label.addEventListener("click", function () {
+            const entity = label.getAttribute("data-entity");
+            const targetToken = Array.from(entityTokens).find(
+              (token) => token.getAttribute("data-entity") === entity
+            );
+            if (targetToken) {
+              targetToken.scrollIntoView({
+                behavior: "smooth",
+                block: "center",
+              });
+
+
+              entityTokens.forEach((token) => {
+                if (token.getAttribute("data-entity") === entity) {
+                  token.classList.add("click-highlight");
+                }
+              });
+
+
+              setTimeout(() => {
+                entityTokens.forEach((token) => {
+                  token.classList.remove("click-highlight");
+                });
+              }, 5000);
+            }
+          });
+        });
       });
-    });
-  </script>
+    </script>
+  </body>
 </html>

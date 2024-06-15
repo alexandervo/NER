@@ -6,8 +6,8 @@ import re
 app = Flask(__name__)
 
 # Load the model and tokenizer
-model = BertForTokenClassification.from_pretrained('ner_model')
-tokenizer = BertTokenizer.from_pretrained('ner_model')
+model = BertForTokenClassification.from_pretrained('ner_model_1')
+tokenizer = BertTokenizer.from_pretrained('ner_model_1')
 model.eval()
 
 def get_key_by_value(d, value):
