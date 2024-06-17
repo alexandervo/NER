@@ -90,8 +90,10 @@
     <div class="box">
       <div class="box-container">
         <h1>Nhận Diện Thực Thể Có Tên</h1>
+        <button type="button" style="border-bottom-left-radius: 0px; border-bottom-right-radius:0px ; z-index: 0;" id="randomTextButton">Dán Ngẫu Nhiên</button>
         <form method="post">
           <div class="textarea-container">
+
             <textarea
               id="autoResizeTextarea"
               name="sentence"
@@ -329,7 +331,7 @@
                   data-entity="PERSONTYPE"
                 >
                   PERSONTYPE
-                  <span class="tooltip">Loại người</span>
+                  <span class="tooltip">Vai trò</span>
                 </li>
               </ul>
             </div>
@@ -363,7 +365,7 @@
                         'PHONENUMBER' %} Số điện thoại {% elif entity.entity ==
                         'QUANTITY' %} Số lượng {% elif entity.entity ==
                         'ADDRESS' %} Địa chỉ {% elif entity.entity ==
-                        'PERSONTYPE' %} Loại người {% endif %}
+                        'PERSONTYPE' %} Vai trò {% endif %}
                       </span>
                     </span>
                   </span>
@@ -496,6 +498,23 @@
               }, 5000);
             }
           });
+        });
+
+
+        const randomTextButton = document.getElementById("randomTextButton");
+        const randomTexts = [
+          "Barack Obama, cựu Tổng thống Mỹ, đã có một bài phát biểu tại Đại học Harvard vào ngày 15 tháng 5 năm 2020. Ông đã nhấn mạnh tầm quan trọng của giáo dục trong việc xây dựng một tương lai bền vững. Nhiều công ty công nghệ lớn như Google và Apple đã tài trợ cho sự kiện này. Địa chỉ email của ông là obama@whitehouse.gov.",
+          "NASA đã thông báo kế hoạch phóng tàu vũ trụ Artemis vào năm 2024 để khám phá Mặt Trăng. Dự án này được hợp tác với SpaceX, một công ty hàng không vũ trụ tư nhân của Elon Musk. Bạn có thể truy cập trang web của NASA tại https://www.nasa.gov để biết thêm chi tiết. Địa chỉ IP của máy chủ chính của NASA là 192.168.1.1.",
+          "Microsoft đã ra mắt phiên bản mới của hệ điều hành Windows vào ngày 24 tháng 6 năm 2021, tại trụ sở chính ở Redmond, Washington. Sản phẩm này đi kèm với nhiều tính năng mới và cải tiến hiệu suất. Bạn có thể tìm hiểu thêm tại trang web https://www.microsoft.com. Số lượng người dùng Windows trên toàn thế giới đã vượt qua con số 1 tỷ.",
+          "Ngày 20/02, tôi đi đến bệnh viện Quốc Tế ở Quận 1, Tp Hồ Chí Minh để gặp mẹ tôi. Mẹ tôi là một bác sĩ khoa lồng ngực. Công việc của mẹ tôi đòi hỏi trình độ chuyên môn cao, kinh nghiệm lâu năm, khả năng ứng biến tình huống. Công việc của mẹ tôi thực sự rất bận rộn, chỉ có khi nào đến những dịp lễ Tết mẹ tôi mới có thời gian ở bên gia đình. Nếu như mọi người ai có người quen mắc những căn bệnh liên quan đến lồng ngực cần phải thực hiện phẫu thuật thì có thể liên hệ qua số điện thoại: 0921223216, hoặc địa chỉ email linhthuy2201@gmail.com, tên mẹ tôi là Nguyễn Ngọc Thùy Linh. Trang cá nhân fb là facebook.com/linh2201.",
+          "Vào lúc 10 giờ sáng ngày 10 tháng 10 năm 2024, tại khách sạn Melia Hà Nội, bà Trần Thị D, giám đốc kỹ thuật của Công ty Cổ phần FPT, sẽ trình bày về kỹ năng lập trình Python nâng cao trong hội thảo lập trình viên quốc tế. Sự kiện này còn có ông Nguyễn Văn A, giám đốc điều hành của FPT, giới thiệu sản phẩm FPT.AI - một giải pháp AI toàn diện. Liên hệ ban tổ chức qua email tech_conference@fpt.com.vn hoặc số điện thoại 0909123456 để đăng ký.Nếu gặp vấn đề với sản phẩm FPT.AI, truy cập trang web https://www.fpt.com.vn hoặc email support@fpt.com.vn. Vui lòng cung cấp IP 192.168.100.1 và số điện thoại 0912345678, hoặc đến văn phòng tại số 123 đường Lê Lợi, Hà Nội từ 8 giờ sáng đến 5 giờ chiều, từ thứ Hai đến thứ Sáu để được hỗ trợ.Tại sự kiện này, chúng tôi cũng sẽ chia sẻ câu chuyện của chị Nguyễn Thị E, người đã mua 300 chiếc khẩu trang y tế tại cửa hàng Dược phẩm Hồng Hà, số 123 đường Lê Lợi, Hà Nội để phục vụ phòng chống dịch bệnh. Liên hệ chị qua số điện thoại 0912345678 hoặc email nguyenthiE@duocpham.com để biết thêm chi tiết về sản phẩm và phương thức giao hàng."
+        ];
+
+
+        randomTextButton.addEventListener("click", function () {
+          const randomIndex = Math.floor(Math.random() * randomTexts.length);
+          textarea.value = randomTexts[randomIndex];
+          textarea.dispatchEvent(new Event('input'));
         });
       });
     </script>
